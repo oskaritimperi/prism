@@ -13,6 +13,3 @@ DEFINES += DATADIR=\"\\\"$${DATADIR}\\\"\" \
 win32: {
 
 }
-
-RESOURCES += \
-    ../resources.qrc

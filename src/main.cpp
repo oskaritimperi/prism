@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
         const QString &app_path = QApplication::applicationDirPath();
 
         s.setValue("path/data", app_path);
-        s.setValue("path/gfx", app_path + "/gfx");
-        s.setValue("path/levels", app_path + "/levels");
+        s.setValue("path/gfx", app_path + "/data/gfx");
+        s.setValue("path/levels", app_path + "/data/levels");
     }
 
     MainWindow mw;

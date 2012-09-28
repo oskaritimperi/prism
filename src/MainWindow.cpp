@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     resize(800, 480);
-    setWindowTitle("Generic platformer base, version 0.0.1 alpha");
+    setWindowTitle("prism, version 0.0.3");
 
     setCentralWidget(m_gameView->instance());
 }

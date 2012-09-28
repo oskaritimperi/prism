@@ -19,8 +19,12 @@ LevelSelectionScene::LevelSelectionScene(const QString &name, const QRectF &rect
 
     m_background = new ParallaxScrollerStatic(this);
     m_background->setLayerWidth(rect.width());
-    m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer1.png"), QPointF(0,0), -2, 6);
-    m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer2.png"), QPointF(0,0), -1, 4);
+    //m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer1.png"), QPointF(0,0), -2, 6);
+    //m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer2.png"), QPointF(0,0), -1, 4);
+
+    m_background->addParallaxScrollItem(QString(appDir + "/data/gfx/background/layer_three.png"), QPointF(0,0), -3, 8);
+    m_background->addParallaxScrollItem(QString(appDir + "/data/gfx/background/layer_two.png"), QPointF(0,0), -2, 6);
+    m_background->addParallaxScrollItem(QString(appDir + "/data/gfx/background/layer_one.png"), QPointF(0,0), -1, 4);
 
     initializeScene();
 }
@@ -36,7 +40,11 @@ void LevelSelectionScene::initializeScene()
 
     QSettings settings;
 
-    QDir levelDirectory(settings.value("path/levels").toString());
+    QString path = qApp->applicationDirPath() + "/data/levels";
+
+    //QDir levelDirectory(settings.value("path/levels").toString());
+
+    QDir levelDirectory(path);
 
     /* TODO: check levels directory for levels (should be 6) and create corresponding buttons
              that react when pressed and lauch the level
@@ -69,8 +77,8 @@ void LevelSelectionScene::initializeScene()
     }
 
     GraphicsButtonObject *btn;
-    btn = new GraphicsButtonObject(QPixmap(QApplication::applicationDirPath() + "/gfx/buttons/back-arrow1.png"), 0, this);
-    btn->setPressedPixmap(QPixmap(QApplication::applicationDirPath() + "/gfx/buttons/back-arrow2.png"));
+    btn = new GraphicsButtonObject(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow1.png"), 0, this);
+    btn->setPressedPixmap(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow2.png"));
     btn->setPos(720, 400);
     btn->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     btn->setZValue(2);

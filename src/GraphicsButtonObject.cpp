@@ -60,6 +60,7 @@ GraphicsButtonObject::GraphicsButtonObject(const QString &str,
         grad.setStart(0, 0);
         grad.setFinalStop(0, 1);
 
+        /*
         grad.setColorAt(0, Qt::white);
         grad.setColorAt(0.20, QColor(137, 175, 201));
         grad.setColorAt(0.35, QColor(35, 136, 207));
@@ -67,6 +68,15 @@ GraphicsButtonObject::GraphicsButtonObject(const QString &str,
         grad.setColorAt(0.65, QColor(35, 136, 207));
         grad.setColorAt(0.80, QColor(137, 175, 201));
         grad.setColorAt(1, Qt::white);
+        */
+
+        grad.setColorAt(0, Qt::red);
+        grad.setColorAt(0.20, QColor(255, 127, 0));
+        grad.setColorAt(0.35, QColor(255, 255, 0));
+        grad.setColorAt(0.5, QColor(0, 255, 0));
+        grad.setColorAt(0.65, QColor(0, 0, 255));
+        grad.setColorAt(0.80, QColor(111, 0, 255));
+        grad.setColorAt(1, QColor(143, 0, 255));
 
         painter.setBrush(QBrush(grad));
         painter.drawRect(4, 4, pw-8, ph-8);

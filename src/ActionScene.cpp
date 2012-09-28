@@ -40,12 +40,10 @@ ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *pare
     m_clearAlert = false;
     m_mapReader = new MapReader;
 
-    qsrand(QTime::currentTime().msec());
+    m_map = 0;
+    m_mapRenderer = 0;
 
-    m_hpText = new QGraphicsTextItem("HP: ", 0, this);
-    m_hpText->setPos(100, 10);
-    m_scoreText = new QGraphicsTextItem("Score: 0", 0, this);
-    m_scoreText->setPos(100, 20);
+    qsrand(QTime::currentTime().msec());
 
     m_hero = new Hero(this, QPointF(100, 300));
     connect(m_hero, SIGNAL(removeMe()), this, SLOT(removeSprite()));
@@ -53,8 +51,11 @@ ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *pare
 
 ActionScene::~ActionScene()
 {
-    delete m_map;
-    delete m_mapReader;
+    if (m_map)
+        delete m_map;
+    if (m_mapReader)
+        delete m_mapReader;
+    if (m_mapRenderer)
     delete m_mapRenderer;
 }
 

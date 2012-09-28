@@ -1,4 +1,4 @@
-include(../platformer.pri)
+include(../prism.pri)
 
 TEMPLATE = lib
 TARGET = tiled
