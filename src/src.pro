@@ -36,7 +36,8 @@ HEADERS += MainWindow.h \
            BasicEnemy.h \
            BarDisplay.h \
            CircularDisplay.h \
-           HeadsUpDisplay.h
+           HeadsUpDisplay.h \
+           AnimatingUiElement.h \
 
 SOURCES += main.cpp \
            MainWindow.cpp \
@@ -58,4 +59,5 @@ SOURCES += main.cpp \
            BasicEnemy.cpp \
            BarDisplay.cpp \
            CircularDisplay.cpp \
-           HeadsUpDisplay.cpp
+           HeadsUpDisplay.cpp \
+           AnimatingUiElement.cpp \
