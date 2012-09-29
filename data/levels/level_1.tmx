@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="25" height="15" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="base" tilewidth="32" tileheight="32">
-  <image source="tileset/tileset.png" width="32" height="32"/>
+ <tileset firstgid="1" name="tileset2" tilewidth="32" tileheight="32">
+  <image source="tileset/tileset2.png" width="96" height="96"/>
  </tileset>
- <layer name="solidground" width="25" height="15">
+ <layer name="solid" width="25" height="15">
+  <properties>
+   <property name="type" value="solid"/>
+  </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFwxUwomFS1ROjZ6iDweTfoRD+2NxIT3fisn8UY2IAdcAAZA==
+   eJxjYBgFo2BwARYgZgViNjT2SAKjYTBwAFfYU5PNDsQcQMxJQzYAG8cBgA==
+  </data>
+ </layer>
+ <layer name="plants" width="25" height="15">
+  <properties>
+   <property name="type" value="covering"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4B4wAjETEDMjMYeSWA0DAYO4Ap7arKHCwAAgOgASg==
   </data>
  </layer>
 </map>

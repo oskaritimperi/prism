@@ -31,6 +31,11 @@ public:
       */
     void loadMap(QString target);
 
+    /**
+      * Unloads map, releasing its resources from memory
+      */
+    void unloadMap();
+
 private:
 
     Tiled::Map *m_map;
@@ -44,10 +49,16 @@ private:
     int m_levelScore;
 
     //! Map layer is drawn to this pixmap
-    QPixmap m_mapPixmap;
+    //QPixmap m_mapPixmap;
 
     //! Item for map layer
-    QGraphicsPixmapItem *m_mapPixmapItem;
+    //QGraphicsPixmapItem *m_mapPixmapItem;
+
+    //! Map layers are drawn to these pixmaps
+    QVector<QPixmap> m_mapPixmaps;
+
+    //! Items for map layers
+    QVector<QGraphicsPixmapItem*> m_mapPixmapItems;
 
     //! What portion of the map to draw
     QSize m_mapWindow;
@@ -64,11 +75,6 @@ private:
 
     //! Stops graphics rendering while scene is cleared.
     bool m_clearAlert;
-
-    //! HP text item
-    QGraphicsTextItem* m_hpText;
-    //! Score text item
-    QGraphicsTextItem* m_scoreText;
 
 signals:
     void gameOver();

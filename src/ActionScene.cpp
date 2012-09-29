@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 
 #include <QSettings>
 
@@ -43,10 +44,12 @@ ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *pare
     m_map = 0;
     m_mapRenderer = 0;
 
+    // initialize rand here
     qsrand(QTime::currentTime().msec());
+    // TODO: implement some logic to randomize color bubbles given to player
 
-    m_hero = new Hero(this, QPointF(100, 300));
-    connect(m_hero, SIGNAL(removeMe()), this, SLOT(removeSprite()));
+    //m_hero = new Hero(this, QPointF(100, 300));
+    //connect(m_hero, SIGNAL(removeMe()), this, SLOT(removeSprite()));
 }
 
 ActionScene::~ActionScene()
@@ -71,6 +74,33 @@ void ActionScene::updateLogic()
 void ActionScene::keyPressEvent(QKeyEvent *event)
 {
     QGraphicsScene::keyPressEvent(event);
+
+    switch(event->key())
+    {
+        // arrow up
+        case 16777235:
+            break;
+        // arrow down
+        case 16777237:
+            break;
+        // arrow left
+        case 16777234:
+            break;
+        // arrow right
+        case 16777236 :
+            break;
+        // button a
+        case 65:
+            break;
+        // button s
+        case 83:
+            break;
+        // button d
+        case 68 :
+            break;
+        default:
+            break;
+    }
 }
 
 void ActionScene::loadMap(QString target)
@@ -94,25 +124,42 @@ void ActionScene::loadMap(QString target)
     qDebug() << "size" << m_map->width() << "x" << m_map->height();
     qDebug() << "layers" << m_map->layerCount();
 
-    QImage img(m_map->width() * m_map->tileWidth(),
-               m_map->height() * m_map->tileHeight(),
-               QImage::Format_ARGB32);
+    for(int layer = 0; layer < m_map->layerCount(); layer++)
+    {
+        QImage img(m_map->width() * m_map->tileWidth(),
+                   m_map->height() * m_map->tileHeight(),
+                   QImage::Format_ARGB32);
 
-    QPainter painter(&img);
-    m_mapRenderer->drawTileLayer(&painter, m_map->layerAt(0)->asTileLayer());
+        QPainter painter(&img);
+        m_mapRenderer->drawTileLayer(&painter, m_map->layerAt(layer)->asTileLayer());
 
-    m_mapPixmap = QPixmap::fromImage(img);
+        QPixmap mapPixmap = QPixmap::fromImage(img);
+        m_mapPixmaps.append(mapPixmap);
 
-    qDebug() << "hasAlpha" << m_mapPixmap.hasAlpha() << "\n"
-             << "hasAlphaChannel" << m_mapPixmap.hasAlphaChannel();
+        qDebug() << "hasAlpha" << mapPixmap.hasAlpha() << "\n"
+                 << "hasAlphaChannel" << mapPixmap.hasAlphaChannel();
 
-    m_mapPixmapItem = addPixmap(m_mapPixmap);
-    m_mapPixmapItem->setPos(0, 0);
-    m_mapPixmapItem->setData(ITEM_OBJECTNAME, QString("SolidGround"));
-    m_mapPixmapItem->setShapeMode(QGraphicsPixmapItem::MaskShape);
-    m_mapPixmapItem->setZValue(1);
+        QGraphicsPixmapItem* mapPixmapItem = addPixmap(mapPixmap);
+        mapPixmapItem->setPos(0, 0);
+        mapPixmapItem->setShapeMode(QGraphicsPixmapItem::MaskShape);
 
-    m_mapPixmapItem->setPixmap(m_mapPixmap);
+        QString type = m_map->layerAt(layer)->property("type");
+
+        if (type == "solid")
+        {
+            mapPixmapItem->setData(ITEM_OBJECTNAME, QString("SolidGround"));
+            mapPixmapItem->setZValue(1);
+        }
+        else if (type == "covering")
+        {
+            mapPixmapItem->setData(ITEM_OBJECTNAME, QString("Covering"));
+            mapPixmapItem->setZValue(2);
+        }
+
+        mapPixmapItem->setPixmap(mapPixmap);
+
+        m_mapPixmapItems.append(mapPixmapItem);
+    }
 
     ObjectGroup* fish = NULL;
 
@@ -136,6 +183,26 @@ void ActionScene::loadMap(QString target)
         }
     }
     m_clearAlert = false;
+}
+
+void ActionScene::unloadMap()
+{
+    foreach(QGraphicsPixmapItem* removableItem, m_mapPixmapItems)
+    {
+        removeItem(removableItem);
+    }
+
+    for(int i = m_mapPixmapItems.size() - 1; i > 0; i++)
+        delete m_mapPixmapItems.at(i);
+
+    m_mapPixmapItems.clear();
+
+    m_mapPixmaps.clear();
+
+    if (m_mapRenderer)
+        delete m_mapRenderer;
+    if (m_map)
+        delete m_map;
 }
 
 void ActionScene::removeSprite()
