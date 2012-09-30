@@ -1,16 +1,13 @@
 #ifndef BarDisplay_h
 #define BarDisplay_h
 
-#include <QGraphicsItem>
+#include <QPixmap>
 
-class BarDisplay : public QGraphicsItem
+class BarDisplay : public QPixmap
 {
 public:
-    BarDisplay(QGraphicsItem* parent = 0);
+    BarDisplay();
     virtual ~BarDisplay();
-
-    virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     void collected(int);
     void consumed(int);

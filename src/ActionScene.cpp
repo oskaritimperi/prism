@@ -103,6 +103,11 @@ void ActionScene::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void ActionScene::drawForeground(QPainter *painter, const QRectF &rect)
+{
+
+}
+
 void ActionScene::loadMap(QString target)
 {
     QFileInfo f(target);

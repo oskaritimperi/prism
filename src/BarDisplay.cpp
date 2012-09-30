@@ -1,7 +1,7 @@
 #include "BarDisplay.h"
 
-BarDisplay::BarDisplay(QGraphicsItem* parent) :
-    QGraphicsItem(parent)
+BarDisplay::BarDisplay() :
+    QPixmap()
 {
     m_partCount = 4;
     m_maxValue = 50;
@@ -46,13 +46,4 @@ void BarDisplay::setDisplayColor(QColor col)
 void BarDisplay::updateDisplay()
 {
     // TODO: update graphics so user knows he is hit
-}
-
-QRectF BarDisplay::boundingRect() const
-{
-    return QRectF();
-}
-
-void BarDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
 }

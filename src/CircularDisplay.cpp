@@ -1,7 +1,7 @@
 #include "CircularDisplay.h"
 
-CircularDisplay::CircularDisplay(QGraphicsItem* parent) :
-    QGraphicsItem(parent)
+CircularDisplay::CircularDisplay() :
+    QPixmap()
 {
     m_partCount = 5;
     m_maxValue = 50;
@@ -17,21 +17,6 @@ CircularDisplay::CircularDisplay(QGraphicsItem* parent) :
 
 CircularDisplay::~CircularDisplay()
 {
-}
-
-void CircularDisplay::advance(int phase)
-{
-    if (phase == 0)
-        return;
-
-    // TODO: consuming logic if color is activated
-    if (phase == 1)
-    {
-        if (m_activated)
-            ;
-        else
-            return;
-    }
 }
 
 void CircularDisplay::setDisplayColor(QColor col)
@@ -61,13 +46,4 @@ void CircularDisplay::unactivate()
 void CircularDisplay::updateDisplay()
 {
     // TODO: update graphics so user knows collecting stuff does help
-}
-
-QRectF CircularDisplay::boundingRect() const
-{
-    return QRectF();
-}
-
-void CircularDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
 }

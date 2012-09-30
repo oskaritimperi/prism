@@ -1,18 +1,13 @@
 #ifndef CircularDisplay_h
 #define CircularDisplay_h
 
-#include <QGraphicsItem>
+#include <QPixmap>
 
-class CircularDisplay : public QGraphicsItem
+class CircularDisplay : public QPixmap
 {
 public:
-    CircularDisplay(QGraphicsItem* parent = 0);
+    CircularDisplay();
     virtual ~CircularDisplay();
-
-    virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-    void advance(int phase);
 
     void setDisplayColor(QColor col);
     void collected(int amount);

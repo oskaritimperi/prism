@@ -27,6 +27,16 @@ public:
     void keyPressEvent(QKeyEvent *event);
 
     /**
+      * TODO: Bind in-game background parallax-scroller to this
+      */
+    void drawBackground(QPainter *painter, const QRectF &rect);
+
+    /**
+      * Used to draw HUD, TODO: implementation
+      */
+    void drawForeground(QPainter *painter, const QRectF &rect);
+
+    /**
       * Loads level from target location.
       */
     void loadMap(QString target);
@@ -47,12 +57,6 @@ private:
 
     //! Levelscore used for records.
     int m_levelScore;
-
-    //! Map layer is drawn to this pixmap
-    //QPixmap m_mapPixmap;
-
-    //! Item for map layer
-    //QGraphicsPixmapItem *m_mapPixmapItem;
 
     //! Map layers are drawn to these pixmaps
     QVector<QPixmap> m_mapPixmaps;
