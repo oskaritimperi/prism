@@ -15,6 +15,8 @@
 class QGraphicsPixmapItem;
 class Hero;
 
+class b2World;
+
 class ActionScene : public GameScene
 {
     Q_OBJECT
@@ -47,6 +49,8 @@ public:
     void unloadMap();
 
 private:
+
+    b2World* m_physicalWorld;
 
     Tiled::Map *m_map;
     Tiled::MapReader *m_mapReader;

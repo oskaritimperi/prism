@@ -9,11 +9,12 @@ TEMPLATE = app
 TARGET = prism
 DEPENDPATH += .
 INCLUDEPATH += . ../libtiled
+INCLUDEPATH += $${PWD}/../Box2D $${PWD}/..
 INSTALLS += target
 target.path = $${BINDIR}
 unix:DESTDIR = ../bin
 unix:LIBS += -L../lib -L/usr/local/lib -L/usr/lib -ltiled
-win32:LIBS += G:/Projects/Qt/platformer/platformer-build-desktop/lib/tiled.dll
+win32:LIBS += G:/Projects/Qt/prism/prism-build-desktop/lib/tiled.dll
 
 OBJECTS_DIR = .obj
 

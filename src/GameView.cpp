@@ -39,7 +39,7 @@ GameView::GameView(QWidget *parent) :
     m_gameTimer = new QTimer(this);
     connect(m_gameTimer, SIGNAL(timeout()), this, SLOT(updateSceneLogic()));
 
-    showScene(menuScene);
+    showScene(levelSelectionScene);
 }
 
 GameView *GameView::instance()

@@ -1,7 +1,7 @@
 #include "BarDisplay.h"
 
-BarDisplay::BarDisplay() :
-    QPixmap()
+BarDisplay::BarDisplay(int w, int h) :
+    QPixmap(w, h)
 {
     m_partCount = 4;
     m_maxValue = 50;

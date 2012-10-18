@@ -24,6 +24,7 @@
 #include "objectgroup.h"
 #include "mapobject.h"
 #include "tile.h"
+#include "tilelayer.h"
 
 #include "ActionScene.h"
 
@@ -33,16 +34,22 @@ using Tiled::OrthogonalRenderer;
 using Tiled::Layer;
 using Tiled::ObjectGroup;
 using Tiled::Tile;
+using Tiled::TileLayer;
 
 ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *parent)
     : GameScene(name, parent)
 {
     setSceneRect(rect);
     m_clearAlert = false;
-    m_mapReader = new MapReader;
+    m_mapReader = new Tiled::MapReader;
 
     m_map = 0;
     m_mapRenderer = 0;
+
+    // start setting up the world here
+    //b2Vec2 gravity(0.0f, -10.0f);
+    //m_physicalWorld = new b2World(gravity);
+    //m_physicalWorld->SetAllowSleeping(true);
 
     // initialize rand here
     qsrand(QTime::currentTime().msec());
@@ -59,7 +66,10 @@ ActionScene::~ActionScene()
     if (m_mapReader)
         delete m_mapReader;
     if (m_mapRenderer)
-    delete m_mapRenderer;
+        delete m_mapRenderer;
+
+    if(m_physicalWorld)
+        ;//delete m_physicalWorld;
 }
 
 void ActionScene::updateLogic()
@@ -103,6 +113,11 @@ void ActionScene::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void ActionScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+
+}
+
 void ActionScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
 
@@ -124,69 +139,103 @@ void ActionScene::loadMap(QString target)
         return;
     }
 
-    m_mapRenderer = new OrthogonalRenderer(m_map);
+    m_mapRenderer = new Tiled::OrthogonalRenderer(m_map);
 
     qDebug() << "size" << m_map->width() << "x" << m_map->height();
     qDebug() << "layers" << m_map->layerCount();
 
     for(int layer = 0; layer < m_map->layerCount(); layer++)
     {
-        QImage img(m_map->width() * m_map->tileWidth(),
-                   m_map->height() * m_map->tileHeight(),
-                   QImage::Format_ARGB32);
-
-        QPainter painter(&img);
-        m_mapRenderer->drawTileLayer(&painter, m_map->layerAt(layer)->asTileLayer());
-
-        QPixmap mapPixmap = QPixmap::fromImage(img);
-        m_mapPixmaps.append(mapPixmap);
-
-        qDebug() << "hasAlpha" << mapPixmap.hasAlpha() << "\n"
-                 << "hasAlphaChannel" << mapPixmap.hasAlphaChannel();
-
-        QGraphicsPixmapItem* mapPixmapItem = addPixmap(mapPixmap);
-        mapPixmapItem->setPos(0, 0);
-        mapPixmapItem->setShapeMode(QGraphicsPixmapItem::MaskShape);
-
         QString type = m_map->layerAt(layer)->property("type");
 
         if (type == "solid")
         {
-            mapPixmapItem->setData(ITEM_OBJECTNAME, QString("SolidGround"));
-            mapPixmapItem->setZValue(1);
+            Tiled::TileLayer* solidTiles = NULL;
+            solidTiles = m_map->layerAt(layer)->asTileLayer();
+
+            for(int w = 0; w < solidTiles->width(); w++)
+            {
+                for (int h = 0; h < solidTiles->height(); h++)
+                {
+                    Tiled::Cell cell;
+                    cell = solidTiles->cellAt(w, h);
+
+                    if(!cell.isEmpty())
+                    {
+                        QGraphicsPixmapItem *solidTile = new QGraphicsPixmapItem(0, this);
+                        solidTile->setData(ITEM_OBJECTNAME, QString("SolidGround"));
+                        solidTile->setPos(w * m_map->tileWidth(),
+                                          h * m_map->tileHeight());
+                        solidTile->setZValue(1);
+                        solidTile->setPixmap(cell.tile->image());
+                        m_mapPixmapItems.append(solidTile);
+                    }
+                }
+            }
         }
-        else if (type == "covering")
+        else
         {
-            mapPixmapItem->setData(ITEM_OBJECTNAME, QString("Covering"));
-            mapPixmapItem->setZValue(2);
+            QImage img(m_map->width() * m_map->tileWidth(),
+                       m_map->height() * m_map->tileHeight(),
+                       QImage::Format_ARGB32);
+
+            QPainter painter(&img);
+            m_mapRenderer->drawTileLayer(&painter, m_map->layerAt(layer)->asTileLayer());
+
+            QPixmap mapPixmap = QPixmap::fromImage(img);
+            m_mapPixmaps.append(mapPixmap);
+
+            qDebug() << "hasAlpha" << mapPixmap.hasAlpha() << "\n"
+                     << "hasAlphaChannel" << mapPixmap.hasAlphaChannel();
+
+            QGraphicsPixmapItem* mapPixmapItem = addPixmap(mapPixmap);
+            mapPixmapItem->setPos(0, 0);
+            mapPixmapItem->setShapeMode(QGraphicsPixmapItem::MaskShape);
+
+            mapPixmapItem->setPixmap(mapPixmap);
+
+            if (type == "covering")
+            {
+                mapPixmapItem->setData(ITEM_OBJECTNAME, QString("Covering"));
+                mapPixmapItem->setZValue(2);
+            }
+            else if (type == "coveringBg")
+            {
+                mapPixmapItem->setData(ITEM_OBJECTNAME, QString("CoveringBg"));
+                mapPixmapItem->setZValue(-1);
+            }
+
+            m_mapPixmapItems.append(mapPixmapItem);
         }
-
-        mapPixmapItem->setPixmap(mapPixmap);
-
-        m_mapPixmapItems.append(mapPixmapItem);
     }
 
-    ObjectGroup* fish = NULL;
+    QVector<QString> colors;
+    colors.append("red"); colors.append("blue"); colors.append("green");
 
-    if(m_map->indexOfLayer("fish") >= 0)
-        fish = m_map->layerAt(m_map->indexOfLayer("fish"))->asObjectGroup();
-
-    if(fish)
+    for (int i = 0; i < colors.size(); i++)
     {
-        Q_FOREACH(Tiled::MapObject *obj, fish->objects())
+        Tiled::ObjectGroup* color = NULL;
+
+        if(m_map->indexOfLayer(colors.at(i)) >= 0)
+            color = m_map->layerAt(m_map->indexOfLayer(colors.at(i)))->asObjectGroup();
+
+        if(color)
         {
-            Collectible *fish = new Collectible(0, this);
-            fish->setData(ITEM_OBJECTNAME, QString("fish"));
-            connect(fish, SIGNAL(removeMe()), this, SLOT(removeSprite()));
+            Q_FOREACH(Tiled::MapObject *obj, color->objects())
+            {
+                Collectible* colorbubble = new Collectible(0, this);
+                colorbubble->setData(ITEM_OBJECTNAME, QString(colors.at(i)));
+                connect(colorbubble, SIGNAL(removeMe()), this, SLOT(removeSprite()));
+                colorbubble->setPos((obj->x()) * m_map->tileWidth(),
+                                    (obj->y() - 1) * m_map->tileHeight());
 
-            fish->setPos((obj->x()) * m_map->tileWidth(),
-                         (obj->y() - 1) * m_map->tileHeight());
+                colorbubble->setZValue(1);
 
-            fish->setZValue(2);
-
-            qDebug() << obj->position() << fish->pos();
+                qDebug() << obj->position() << colorbubble->pos();
+            }
         }
     }
+
     m_clearAlert = false;
 }
 

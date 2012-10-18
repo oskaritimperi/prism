@@ -6,7 +6,7 @@
 class BarDisplay : public QPixmap
 {
 public:
-    BarDisplay();
+    BarDisplay(int w = 250, int h = 40);
     virtual ~BarDisplay();
 
     void collected(int);

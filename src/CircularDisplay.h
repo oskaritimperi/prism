@@ -6,7 +6,7 @@
 class CircularDisplay : public QPixmap
 {
 public:
-    CircularDisplay();
+    CircularDisplay(int w = 90, int h = 90);
     virtual ~CircularDisplay();
 
     void setDisplayColor(QColor col);
