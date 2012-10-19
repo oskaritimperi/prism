@@ -19,12 +19,15 @@
 #include "Hero.h"
 #include "ParallaxScrollerStatic.h"
 #include "Collectible.h"
+#include "HeadsUpDisplay.h"
 
 #include "layer.h"
 #include "objectgroup.h"
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+
+#include "Box2D/Dynamics/b2World.h"
 
 #include "ActionScene.h"
 
@@ -45,6 +48,8 @@ ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *pare
 
     m_map = 0;
     m_mapRenderer = 0;
+
+    m_hud = new HeadsUpDisplay(sceneRect().width(), sceneRect().height(), this, this);
 
     // start setting up the world here
     //b2Vec2 gravity(0.0f, -10.0f);
@@ -120,7 +125,7 @@ void ActionScene::drawBackground(QPainter *painter, const QRectF &rect)
 
 void ActionScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-
+    painter->drawPixmap(0, 0, width(), height(), *m_hud);
 }
 
 void ActionScene::loadMap(QString target)

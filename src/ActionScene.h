@@ -12,8 +12,11 @@
 #include "mapreader.h"
 #include "orthogonalrenderer.h"
 
+#include "Box2D.h"
+
 class QGraphicsPixmapItem;
 class Hero;
+class HeadsUpDisplay;
 
 class b2World;
 
@@ -83,6 +86,9 @@ private:
 
     //! Stops graphics rendering while scene is cleared.
     bool m_clearAlert;
+
+    //! This item contais all hud elements, rendered in drawForeground
+    HeadsUpDisplay* m_hud;
 
 signals:
     void gameOver();

@@ -9,6 +9,8 @@ public:
     BarDisplay(int w = 250, int h = 40);
     virtual ~BarDisplay();
 
+    void initShape();
+
     void collected(int);
     void consumed(int);
     void setDisplayColor(QColor col);

@@ -11,29 +11,29 @@ CircularDisplay::CircularDisplay(int w, int h) :
     m_activated = false;
 
     fill(QColor(Qt::transparent));
-
-    QPainter p(this);
-    QPen pen(QColor(0, 0, 0, 255));
-    p.setPen(pen);
-
-    // draw base ellipse
-    p.drawEllipse(45, 45, 35, 35);
-
-    // draw "tick" lines
-    p.drawLine(45, 10, 45, 0); // 12 o'clock
-    p.drawLine(62.5, 27.5, 70, 20); // 1.5 o'clock
-    p.drawLine(80, 45, 90, 45); // 3 o'clock
-    p.drawLine(62.5, 62.5, 70, 70); // 4.5 o'clock
-    p.drawLine(45, 80, 80, 90); // 6 o'clock
-
-    /* TODO:
-        initialize this item with some kind of rounds graphics
-        that supports partitioning
-    */
 }
 
 CircularDisplay::~CircularDisplay()
 {
+}
+
+void CircularDisplay::initShape()
+{
+    QPainter p(this);
+    QPen pen(QColor(0, 0, 0, 255));
+    QBrush brush(m_displayColor);
+
+    pen.setWidth(5);
+    p.setPen(pen);
+    p.setBrush(brush);
+
+    // draw base ellipse
+    p.drawEllipse(QPointF(25, 35), 20, 20);
+
+    // draw "tick" lines
+    p.drawLine(25, 15, 25, 0); // 12 o'clock
+    p.drawLine(45, 35, 60, 35); // 3 o'clock
+    p.drawLine(25, 55, 25, 70); // 6 o'clock
 }
 
 void CircularDisplay::setDisplayColor(QColor col)

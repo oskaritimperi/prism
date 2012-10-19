@@ -1,23 +1,30 @@
 #ifndef HeadsUpDisplay_h
 #define HeadsUpDisplay_h
 #include <QObject>
+#include <QPixmap>
 
 class QGraphicsScene;
 class BarDisplay;
 class CircularDisplay;
 
-class HeadsUpDisplay : public QObject
+class HeadsUpDisplay : public QObject, public QPixmap
 {
     Q_OBJECT
 public:
-    HeadsUpDisplay(QGraphicsScene* anchorScene, QObject *parent = 0);
+    HeadsUpDisplay(int w, int h, QGraphicsScene* anchorScene, QObject *parent = 0);
     virtual ~HeadsUpDisplay();
+
+    CircularDisplay* redDisplay() const;
+    CircularDisplay* greenDisplay() const;
+    CircularDisplay* blueDisplay() const;
+    BarDisplay* healthDisplay() const;
     
 signals:
     
 public slots:
 
 private:
+    QGraphicsScene* m_anchorScene;
     BarDisplay* m_healtBar;
     CircularDisplay* m_redColor;
     CircularDisplay* m_greenColor;

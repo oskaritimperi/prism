@@ -9,6 +9,7 @@ public:
     CircularDisplay(int w = 90, int h = 90);
     virtual ~CircularDisplay();
 
+    void initShape();
     void setDisplayColor(QColor col);
     void collected(int amount);
     void activate();

@@ -1,3 +1,5 @@
+#include <QPainter>
+
 #include "BarDisplay.h"
 
 BarDisplay::BarDisplay(int w, int h) :
@@ -7,15 +9,39 @@ BarDisplay::BarDisplay(int w, int h) :
     m_maxValue = 50;
     m_value = 50;
 
-    /* TODO:
-        initialize this item with some kind of rectangle graphics
-        that supports partitioning, e.g.
-        [  /  /  ] or such
-    */
+    fill(QColor(Qt::transparent));
 }
 
 BarDisplay::~BarDisplay()
 {
+}
+
+void BarDisplay::initShape()
+{
+    QPainter p(this);
+    QPen pen(QColor(0, 0, 0, 255));
+    pen.setWidth(1);
+
+    QBrush brush(m_displayColor);
+
+    p.setPen(pen);
+    p.fillRect(0, 0, width(), height(), brush);
+
+    // left side
+    p.drawLine(0, 0, 0, height() - 1);
+    p.drawLine(0, 0, 20, 0);
+    p.drawLine(0, height() - 1, 20, height() - 1);
+
+    // right side
+    p.drawLine(width() - 1, 0, width() - 1, height() - 1);
+    p.drawLine(width() - 1, 0, width() -1 - 20, 0);
+    p.drawLine(width() - 1, height() - 1, width() - 1 - 20, height() - 1);
+
+    pen.setWidth(2);
+    p.setPen(pen);
+    // the | -lines
+    for (int i = 1; i < 4; i++)
+        p.drawLine((160 / 3) * i, 0, (160 / 3) * i - 15, height() - 1);
 }
 
 void BarDisplay::collected(int amount)
