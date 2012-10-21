@@ -24,6 +24,7 @@ private:
     int m_value;
     int m_maxValue;
     QColor m_displayColor;
+    QVector<QPolygon> m_healthIndicators;
 
     void updateDisplay();
     

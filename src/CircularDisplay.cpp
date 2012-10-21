@@ -23,17 +23,32 @@ void CircularDisplay::initShape()
     QPen pen(QColor(0, 0, 0, 255));
     QBrush brush(m_displayColor);
 
-    pen.setWidth(5);
+    pen.setWidth(4);
     p.setPen(pen);
-    p.setBrush(brush);
 
     // draw base ellipse
     p.drawEllipse(QPointF(25, 35), 20, 20);
 
+    p.setBrush(brush);
+
+    // first 1/4th
+    //p.drawPie(5, 15, 40, 20, 0, 180 * 16);
+
+    // last 1/4th
+    //p.drawPie(25, 35, 40, 20, 0, -180 * 16);
+
+    // upper half
+    //p.drawPie(5, 15, 40, 40, 0, 180 * 16);
+
+    // lower half
+    pen.setWidth(2);
+    p.setPen(pen);
+    p.drawPie(5, 15, 40, 40, 0, -180 * 16);
+
     // draw "tick" lines
-    p.drawLine(25, 15, 25, 0); // 12 o'clock
-    p.drawLine(45, 35, 60, 35); // 3 o'clock
-    p.drawLine(25, 55, 25, 70); // 6 o'clock
+    //p.drawLine(25, 15, 25, 0); // 12 o'clock
+    //p.drawLine(45, 35, 60, 35); // 3 o'clock
+    //p.drawLine(25, 55, 25, 70); // 6 o'clock
 }
 
 void CircularDisplay::setDisplayColor(QColor col)

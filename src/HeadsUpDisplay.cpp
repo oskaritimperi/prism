@@ -1,5 +1,5 @@
 #include <QPainter>
-
+#include <QRgb>
 #include "BarDisplay.h"
 #include "CircularDisplay.h"
 
@@ -10,7 +10,7 @@ HeadsUpDisplay::HeadsUpDisplay(int w, int h, QGraphicsScene *anchorScene, QObjec
 {
     fill(QColor(Qt::transparent));
     m_healtBar = new BarDisplay(200, 40);
-    m_healtBar->setDisplayColor(QColor(255, 0, 127, 127));
+    m_healtBar->setDisplayColor(QColor(255, 204, 51, 127));
     m_healtBar->initShape();
 
     m_redColor = new CircularDisplay(70, 70);

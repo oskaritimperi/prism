@@ -113,7 +113,11 @@ void ActionScene::keyPressEvent(QKeyEvent *event)
         // button d
         case 68 :
             break;
+        case 16777216 :
+            gameView()->changeScene(gameView()->getScene("LevelSelectionScene"));
+            break;
         default:
+            qDebug() << event->key();
             break;
     }
 }
@@ -125,7 +129,7 @@ void ActionScene::drawBackground(QPainter *painter, const QRectF &rect)
 
 void ActionScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    painter->drawPixmap(0, 0, width(), height(), *m_hud);
+    painter->drawPixmap(rect.x(), rect.y(), sceneRect().width(), sceneRect().height(), *m_hud);
 }
 
 void ActionScene::loadMap(QString target)
