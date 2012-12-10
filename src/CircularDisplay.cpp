@@ -1,7 +1,9 @@
 #include <QPainter>
+#include <QDebug>
+
 #include "CircularDisplay.h"
 
-CircularDisplay::CircularDisplay(int w, int h) :
+CircularDisplay::CircularDisplay(const QString& name, int w, int h) :
     QPixmap(w, h)
 {
     m_partCount = 5;
@@ -9,6 +11,7 @@ CircularDisplay::CircularDisplay(int w, int h) :
     m_consumeSpeed = 5;
     m_value = 10;
     m_activated = false;
+    m_name = name;
 
     fill(QColor(Qt::transparent));
 }
@@ -67,12 +70,19 @@ void CircularDisplay::collected(int amount)
 
 void CircularDisplay::activate()
 {
+    qDebug() << "activated " << m_name;
     m_activated = true;
 }
 
-void CircularDisplay::unactivate()
+void CircularDisplay::deactivate()
 {
+    qDebug() << "deactivated " << m_name;
     m_activated = false;
+}
+
+bool CircularDisplay::active() const
+{
+    return m_activated;
 }
 
 void CircularDisplay::updateDisplay()

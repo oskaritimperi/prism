@@ -12,7 +12,7 @@
 #include "mapreader.h"
 #include "orthogonalrenderer.h"
 
-#include "Box2D.h"
+#include "Box2D/Common/b2Math.h"
 
 class QGraphicsPixmapItem;
 class Hero;
@@ -51,9 +51,29 @@ public:
       */
     void unloadMap();
 
+    /**
+      * Build wall objects
+      * @param &rect holds size of wall
+      * @param &pos holds position of wall
+      */
+    void addBlock(const QRectF &rect, const QPointF &pos, QGraphicsPixmapItem* tile);
+
+    /**
+      * calls addWall(const QRectF &rect, const QPointF &pos);
+      * used as convenience method
+      */
+    void addBlock(qreal w, qreal h, qreal x, qreal y, QGraphicsPixmapItem* tile);
+
+    /**
+      * Builds walls that surround the level.
+      * @param &v1
+      * @param &v2
+      */
+    void addEdge(const b2Vec2 &v1, const b2Vec2 &v2);
+
 private:
 
-    b2World* m_physicalWorld;
+    b2World* m_world;
 
     Tiled::Map *m_map;
     Tiled::MapReader *m_mapReader;

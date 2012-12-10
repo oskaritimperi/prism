@@ -27,7 +27,12 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include "Box2D/Dynamics/b2World.h"
+#include "Box2d/Dynamics/b2World.h"
+#include "Box2d/Dynamics/b2Fixture.h"
+#include "Box2d/Collision/Shapes/b2PolygonShape.h"
+#include "Box2d/Collision/Shapes/b2EdgeShape.h"
+
+#include "common.h"
 
 #include "ActionScene.h"
 
@@ -52,15 +57,19 @@ ActionScene::ActionScene(const QString &name, const QRectF &rect, GameView *pare
     m_hud = new HeadsUpDisplay(sceneRect().width(), sceneRect().height(), this, this);
 
     // start setting up the world here
-    //b2Vec2 gravity(0.0f, -10.0f);
-    //m_physicalWorld = new b2World(gravity);
-    //m_physicalWorld->SetAllowSleeping(true);
+    b2Vec2 gravity(0.0f, 10.0f);
+    m_world = new b2World(gravity);
+    m_world->SetAllowSleeping(true);
 
     // initialize rand here
     qsrand(QTime::currentTime().msec());
     // TODO: implement some logic to randomize color bubbles given to player
 
-    //m_hero = new Hero(this, QPointF(100, 300));
+    QString appDir = qApp->applicationDirPath();
+
+    m_hero = new Hero(this, QPointF(150, 150));
+    m_hero->loadAnimations(QString(appDir + "/data/gfx/characters/hero/"));
+
     //connect(m_hero, SIGNAL(removeMe()), this, SLOT(removeSprite()));
 }
 
@@ -73,45 +82,61 @@ ActionScene::~ActionScene()
     if (m_mapRenderer)
         delete m_mapRenderer;
 
-    if(m_physicalWorld)
-        ;//delete m_physicalWorld;
+    if(m_world)
+        delete m_world;
 }
 
 void ActionScene::updateLogic()
 {
     if(!m_clearAlert)
     {
+        // Collision logic through sheer awesomeness of Box2D, FTW.
+        m_world->Step(1.0f / FPS, 5, 5);
+        m_world->ClearForces();
+
         advance();
         update();
+        m_hud->update();
     }
 }
 
 void ActionScene::keyPressEvent(QKeyEvent *event)
 {
-    QGraphicsScene::keyPressEvent(event);
+    //QGraphicsScene::keyPressEvent(event);
+
+    b2Body *body = m_hero->getFixture()->GetBody();
 
     switch(event->key())
     {
         // arrow up
         case 16777235:
+            body->ApplyForce(b2Vec2(5.0f, -20.0f), body->GetWorldCenter());
             break;
         // arrow down
         case 16777237:
             break;
         // arrow left
         case 16777234:
+            body->ApplyForce(b2Vec2(-10.0f, 0), body->GetWorldCenter());
             break;
         // arrow right
         case 16777236 :
+            body->ApplyForce(b2Vec2(10.0f, 0), body->GetWorldCenter());
             break;
         // button a
         case 65:
+            m_hud->toggleRedColor();
+            m_hero->toggleRedColor();
             break;
         // button s
         case 83:
+            m_hud->toggleGreenColor();
+            m_hero->toggleGreenColor();
             break;
         // button d
         case 68 :
+            m_hud->toggleBlueColor();
+            m_hero->toggleBlueColor();
             break;
         case 16777216 :
             gameView()->changeScene(gameView()->getScene("LevelSelectionScene"));
@@ -124,12 +149,64 @@ void ActionScene::keyPressEvent(QKeyEvent *event)
 
 void ActionScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
-
+    return;
 }
 
 void ActionScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    painter->drawPixmap(rect.x(), rect.y(), sceneRect().width(), sceneRect().height(), *m_hud);
+    //painter->drawPixmap(rect.x(), rect.y(), sceneRect().width(), sceneRect().height(), *m_hud);
+}
+
+void ActionScene::addBlock(const QRectF &rect, const QPointF &pos, QGraphicsPixmapItem* tile)
+{
+    b2BodyDef def;
+    def.position.Set(P2M(pos.x()), P2M(pos.y()));
+    def.userData = tile;
+    b2Body *body = m_world->CreateBody(&def);
+
+    b2PolygonShape box;
+    box.SetAsBox(P2M(rect.width()/2), P2M(rect.height()/2),
+                 b2Vec2(P2M(rect.width()/2), P2M(rect.height()/2)), 0);
+
+    b2Fixture *fixture = body->CreateFixture(&box, 0);
+
+    b2Filter filter;
+    fixture->SetFilterData(filter);
+
+    // Setup a circular reference, we can get the body from the item
+    // and the item from the body. Dunno if needed though :-)
+    tile->setData(0, qVariantFromValue(static_cast<void *>(fixture)));
+}
+
+void ActionScene::addBlock(qreal w, qreal h, qreal x, qreal y, QGraphicsPixmapItem* tile)
+{
+    addBlock(QRectF(0, 0, w, h), QPointF(x, y), tile);
+}
+
+void ActionScene::addEdge(const b2Vec2 &v1, const b2Vec2 &v2)
+{
+    QGraphicsLineItem *li = new QGraphicsLineItem(M2P(v1.x), M2P(v1.y),
+                                                  M2P(v2.x), M2P(v2.y));
+    li->setPen(QPen(Qt::transparent));
+    addItem(li);
+
+    b2BodyDef def;
+    b2Body *body = m_world->CreateBody(&def);
+
+    b2EdgeShape edge;
+    edge.Set(v1, v2);
+
+    b2FixtureDef fixdef;
+    fixdef.friction = 0.25f;
+    fixdef.density = 0;
+    fixdef.shape = &edge;
+    fixdef.userData = li;
+
+    b2Fixture *fixture = body->CreateFixture(&fixdef);
+
+    // Setup a circular reference, we can get the fixture from the item
+    // and the item from the fixture. Dunno if needed though :-)
+    li->setData(0, qVariantFromValue(static_cast<void *>(fixture)));
 }
 
 void ActionScene::loadMap(QString target)
@@ -177,6 +254,10 @@ void ActionScene::loadMap(QString target)
                                           h * m_map->tileHeight());
                         solidTile->setZValue(1);
                         solidTile->setPixmap(cell.tile->image());
+                        addBlock(m_map->tileWidth(), m_map->tileHeight(),
+                                 w * m_map->tileWidth(),
+                                 h * m_map->tileHeight(),
+                                 solidTile);
                         m_mapPixmapItems.append(solidTile);
                     }
                 }
@@ -244,6 +325,17 @@ void ActionScene::loadMap(QString target)
             }
         }
     }
+
+    const int w = sceneRect().width() / 8;
+    const int h = sceneRect().height();
+    // top, bottom, left, right walls
+    addEdge(b2Vec2(0, 0), b2Vec2(P2M(w), 0));
+    addEdge(b2Vec2(0, P2M(h-1)), b2Vec2(P2M(w), P2M(h-1)));
+    addEdge(b2Vec2(0, 0), b2Vec2(0, P2M(h)));
+    addEdge(b2Vec2(P2M(w-1), 0), b2Vec2(P2M(w-1), P2M(h)));
+
+    m_hero->bindToWorld(m_world);
+    m_hero->updatePosition(100, 100);
 
     m_clearAlert = false;
 }

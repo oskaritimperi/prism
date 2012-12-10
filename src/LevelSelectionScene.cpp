@@ -19,8 +19,6 @@ LevelSelectionScene::LevelSelectionScene(const QString &name, const QRectF &rect
 
     m_background = new ParallaxScrollerStatic(this);
     m_background->setLayerWidth(rect.width());
-    //m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer1.png"), QPointF(0,0), -2, 6);
-    //m_background->addParallaxScrollItem(QString(appDir + "/gfx/bg/layer2.png"), QPointF(0,0), -1, 4);
 
     m_background->addParallaxScrollItem(QString(appDir + "/data/gfx/background/layer_three.png"), QPointF(0,0), -3, 8);
     m_background->addParallaxScrollItem(QString(appDir + "/data/gfx/background/layer_two.png"), QPointF(0,0), -2, 6);
@@ -77,8 +75,8 @@ void LevelSelectionScene::initializeScene()
     }
 
     GraphicsButtonObject *btn;
-    btn = new GraphicsButtonObject(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow1.png"), 0, this);
-    btn->setPressedPixmap(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow2.png"));
+    btn = new GraphicsButtonObject(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow.png"), 0, this);
+    btn->setPressedPixmap(QPixmap(QApplication::applicationDirPath() + "/data/gfx/buttons/back-arrow-pressed.png"));
     btn->setPos(720, 400);
     btn->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     btn->setZValue(2);

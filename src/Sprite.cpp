@@ -39,7 +39,7 @@ void Sprite::setFrame(int frame)
 {
     if (frame < 0 || frame >= getCurrentAnimation().size())
     {
-        qWarning("invalid frame number %d", frame);
+        //qWarning("invalid frame number %d", frame);
         return;
     }
 

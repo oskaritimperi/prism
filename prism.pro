@@ -7,5 +7,5 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = libtiled \
-          src
+SUBDIRS = src \
+          libtiled \

@@ -14,10 +14,16 @@ public:
     HeadsUpDisplay(int w, int h, QGraphicsScene* anchorScene, QObject *parent = 0);
     virtual ~HeadsUpDisplay();
 
+    void update();
+
     CircularDisplay* redDisplay() const;
     CircularDisplay* greenDisplay() const;
     CircularDisplay* blueDisplay() const;
     BarDisplay* healthDisplay() const;
+
+    void toggleRedColor();
+    void toggleGreenColor();
+    void toggleBlueColor();
     
 signals:
     

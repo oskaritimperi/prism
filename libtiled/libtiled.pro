@@ -13,7 +13,8 @@ macx {
 DLLDESTDIR = ..
 
 #win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
-win32:INCLUDEPATH += G:/QtSDK/QtSources/4.8.1/src/3rdparty/zlib
+#win32:INCLUDEPATH += I:/Qt/Qt5.0.0-rc1/5.0.0-rc1/Src/qtbase/src/3rdparty/zlib
+win32:INCLUDEPATH += I:/Qt/4.8.4/src/3rdparty/zlib
 else:LIBS += -lz
 
 DEFINES += QT_NO_CAST_FROM_ASCII \

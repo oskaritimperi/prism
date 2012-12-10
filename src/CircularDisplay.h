@@ -6,14 +6,18 @@
 class CircularDisplay : public QPixmap
 {
 public:
-    CircularDisplay(int w = 90, int h = 90);
+    CircularDisplay(const QString& name, int w = 90, int h = 90);
     virtual ~CircularDisplay();
 
     void initShape();
     void setDisplayColor(QColor col);
     void collected(int amount);
+
     void activate();
-    void unactivate();
+    void deactivate();
+    bool active() const;
+
+    void updateDisplay();
 
 signals:
     
@@ -26,9 +30,7 @@ private:
     int m_consumeSpeed;
     bool m_activated;
     QColor m_displayColor;
-
-    void updateDisplay();
-    
+    QString m_name;
 };
 
 #endif // CircularDisplay_h

@@ -14,6 +14,8 @@ public:
     void collected(int);
     void consumed(int);
     void setDisplayColor(QColor col);
+
+    void updateDisplay();
     
 signals:
     
@@ -25,9 +27,6 @@ private:
     int m_maxValue;
     QColor m_displayColor;
     QVector<QPolygon> m_healthIndicators;
-
-    void updateDisplay();
-    
 };
 
 #endif // BarDisplay_h
