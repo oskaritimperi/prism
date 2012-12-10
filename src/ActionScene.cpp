@@ -326,7 +326,7 @@ void ActionScene::loadMap(QString target)
         }
     }
 
-    const int w = sceneRect().width() / 8;
+    const int w = m_map->width() * m_map->tileWidth();
     const int h = sceneRect().height();
     // top, bottom, left, right walls
     addEdge(b2Vec2(0, 0), b2Vec2(P2M(w), 0));
